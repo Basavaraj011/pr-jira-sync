@@ -1,0 +1,5 @@
+__pycache__/
+scaffold.py
+vector_store/
+test/
+.venv

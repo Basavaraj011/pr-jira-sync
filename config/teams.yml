@@ -1,0 +1,38 @@
+# config/teams.yml
+
+teams:
+  team_a:
+    project_id: project_1
+    aliases:
+      - "team a"
+      - "team_a"
+      - "team-a"
+      - "platform a"
+      - "teama"
+      - "project x"
+      - "project-x"
+      - "px"
+      - "projectx"
+
+  team_b:
+    project_id: Project_2
+    aliases:
+      - "team b"
+      - "team_b"
+      - "team-b"
+      - "platform b"
+      - "teamb"
+
+projects:
+  Project_1:
+    aliases:
+      - "project x"
+      - "project-x"
+      - "px"
+      - "projectx"
+
+
+repo_names:
+  error-pipeline-demo:
+    aliases:
+      - "error-pipeline-demo"

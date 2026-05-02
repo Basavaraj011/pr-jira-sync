@@ -1,0 +1,95 @@
+project:
+  name: "Team A"
+  aliases:
+      - "team a"
+      - "team_a"
+      - "team-a"
+      - "platform a"
+      - "teama"
+      - "project x"
+      - "project-x"
+      - "px"
+      - "projectx"
+  description: "Project configuration for Team A"
+  enabled: true  # Set to false to disable this team
+  
+features:
+  jira_ticketing:
+    enabled: true
+    project_key: "TEAMA"
+    issue_type: "Bug"
+    priority: "High"
+    
+  self_heal:
+    enabled: true
+    max_attempts: 5
+    allow_auto_merge: true
+    
+  chatbot:
+    enabled: true
+    knowledge_base: true
+
+  repository:
+    clone_path: "/tmp/team_a_repo"
+
+context_generator:
+  is_full_scan: true                   # if false, only scan recently changed files (based on git history)
+  repo_path: "/tmp/team_a_repo"          # path to the repo to scan (absolute or relative to this script)
+  output_path: "context.toon"            # where to write the output JSON file
+  max_workers: 8                         # max concurrent Claude API calls
+  skip_dirs:
+    - vendor
+    - node_modules
+    - dist
+    - build
+    - .git
+    - __pycache__
+    - .terraform
+    - .serverless
+    - coverage
+    - .nyc_output
+    - .vscode
+    - .idea
+    - .gitignore
+    - README.md
+
+  
+  skip_file_patterns:
+    - "*_test.py"
+    - "*_test.go"
+    - "*_test.js"
+    - "*_test.ts"
+    - "*_spec.rb"
+    - "*_spec.js"
+    - "*_spec.ts"
+    - "test_*.py"
+    - "*.test.js"
+    - "*.test.ts"
+    - "*.spec.js"
+    - "*.spec.ts"
+    - "*.generated.*"
+    - "*.pb.go"
+    - "*.pb.py"
+    - "*.lock"
+    - "*.min.js"
+    - "*.min.css"
+    - "*.jpg"
+    - "*.jpeg"
+    - "*.png"
+    - "*.gif"
+    - "*.svg"
+    - "*.ico"
+    - "*.pdf"
+    - "*.zip"
+    - "*.tar"
+    - "*.gz"
+    - "*.pyc"
+    - "*.class"
+    - "*.o"
+    - "*.exe"
+    - "*.bin"
+    - "context.toon"     
+    - ".gitignore"
+    - "README.md"                
+  max_file_bytes: 32768
+    

@@ -1,0 +1,22 @@
+features:
+  jira_ticketing:
+    enabled: true
+    version: "1.0.0"
+    description: "Automatic JIRA ticket creation and RCA analysis"
+    
+  self_heal:
+    enabled: true
+    version: "1.0.0"
+    description: "Automatic error detection and healing with PR generation"
+    
+  chatbot:
+    enabled: true
+    version: "1.0.0"
+    description: "Interactive chatbot for error resolution and knowledge base"
+
+# Global feature settings
+settings:
+  auto_learn_from_fixes: true
+  enable_vector_search: true
+  enable_caching: true
+  cache_ttl_hours: 24

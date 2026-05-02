@@ -1,0 +1,9 @@
+atlassian-python-api
+sqlalchemy
+pyyaml
+python-dotenv
+requests
+dotenv
+sqlalchemy
+pyodbc
+jira

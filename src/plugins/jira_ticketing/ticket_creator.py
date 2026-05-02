@@ -152,4 +152,7 @@ def change_ticket_status(ticket_key: str, status: str) -> bool:
  
  
 if __name__ == "__main__":
-    change_ticket_status(ticket_key, "Done")
+    ticket_key = 'SCRUM-346'
+    status = "Done"
+    change_ticket_status(ticket_key, status)
+    print(f"Ticket ({ticket_key}) status has been updated to {status}")

@@ -1,0 +1,35 @@
+project:
+  name: "Team B"
+  description: "Project configuration for Team B"
+  enabled: false  # Set to true to enable this team
+  
+features:
+  jira_ticketing:
+    enabled: true
+    project_key: "TEAMB"
+    issue_type: "Bug"
+    priority: "High"
+    
+  self_heal:
+    enabled: true
+    max_attempts: 5
+    allow_auto_merge: true
+    
+  chatbot:
+    enabled: true
+    knowledge_base: true
+
+integrations:
+  ticketing agents:
+    jira:
+      url: "https://jira.example.com"
+    
+  CI/CD:
+    bitbucket:
+      url: "https://bitbucket.org"
+      workspace: "team-b-workspace"
+    
+ai_settings:
+  model: "claude-3-sonnet-20240229"
+  temperature: 0.5
+  max_tokens: 2500
