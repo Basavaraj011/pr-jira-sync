@@ -18,6 +18,6 @@ if not ticket_key or not status:
 
 try:
     ticket_creator.change_ticket_status(ticket_key, status)
-    logging.info(f"Ticket ({ticket_key}) status has been updated to {status}")
+    logging.info(f"Ticket transistion is successful")
 except Exception as e:
     logging.error(f"Error occurred while updating the Jira ticket {ticket_key}: {e}")

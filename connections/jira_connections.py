@@ -25,10 +25,9 @@ class JiraClient:
         """Establish connection to JIRA"""
         try:
             self.client = JIRA(server=self.url, basic_auth=(self.username, self.api_token))
-            print(f"Connected to JIRA at URL: {self.client.projects()}")
+            logging.info(f"Connected to JIRA at URL: {self.client.projects()}")
             project = self.client.project('SCRUM')
-            issue_types = project.issueTypes    
-            print(f"Available issue types in project {project.key}: {[it.name for it in issue_types]}")
+            issue_types = project.issueTypes
 
         except Exception as e:
             print(f"Failed to connect to JIRA: {e}")
