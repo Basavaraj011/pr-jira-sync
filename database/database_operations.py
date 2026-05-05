@@ -390,30 +390,6 @@ def get_solution_data_from_db(similar_error_id, db_manager) -> Optional[Dict[str
     except Exception as e:
         logger.error(f"Failed to fetch solution data from database: {e}", exc_info=True)
         return None
-   
-
-def insert_pr_metadata(meta: Dict[str, Any], db_manager) -> None:
-    sql = """
-    INSERT INTO dbo.pr_metadata
-    (provider, workspace_project, repo_slug, pr_id, pr_url, title, branch, base_branch,
-     commit_sha, confidence, rca_short, rca_full, solution_summary, rollback_steps, test_notes, status)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """
-    vals = (
-        meta["provider"], meta["workspace_or_project"], meta["repo_slug"], str(meta.get("pr_id") or ""),
-        meta.get("pr_url",""), meta["title"], meta["branch"], meta["base_branch"],
-        meta["commit_sha"], meta["confidence"], meta.get("rca_short",""), meta.get("rca_full",""),
-        meta.get("solution_summary",""), meta.get("rollback_steps",""), meta.get("test_notes",""), meta["status"]
-    )
-    with db_manager as c:
-        c.cursor().execute(sql, vals)
-
-def update_pr_status(pr_id, status, db_manager, when=None) -> None:
-    field = "merged_at" if status == "MERGED" else ("declined_at" if status == "DECLINED" else None)
-    ts_set = f", {field}=SYSDATETIME()" if field else ""
-    sql = f"UPDATE dbo.pr_metadata SET status=?, updated_at=SYSDATETIME(){ts_set} WHERE pr_id=?"
-    with db_manager as c:
-        c.cursor().execute(sql, (status, pr_id))
 
 def upsert_solution_data(solution_data: List[Dict[str, Any]], solution, status: List[Dict[str, Any]], db_manager) -> bool:
     """
@@ -606,7 +582,82 @@ def get_jira_ticket_details_from_db(error_id, db_manager) -> Optional[Dict[str, 
         logger.error(f"Failed to fetch jira details from database: {e}", exc_info=True)
         return None
    
+def upsert_pr_metadata(meta: dict, db_manager) -> None:
+    query = f"""
+    MERGE {DATABASE_NAME}.{DATABASE_SCHEMA}.pr_metadata AS target
+    USING (SELECT
+        @jira_ticket_number AS jira_ticket_number,
+        @repo_slug AS repo_slug,
+        @pr_id AS pr_id,
+        @pr_url AS pr_url,
+        @title AS title,
+        @branch AS branch,
+        @base_branch AS base_branch,
+        @status AS status,
+        @approved_at AS approved_at,
+        @merged_at AS merged_at,
+        @created_at AS created_at,
+        @updated_at AS updated_at
+    ) AS source
+    ON target.jira_ticket_number = source.jira_ticket_number
+    AND target.pr_id = source.pr_id
 
+    WHEN MATCHED THEN
+    UPDATE SET
+        status = source.status,
+        approved_at = COALESCE(source.approved_at, target.approved_at),
+        merged_at = COALESCE(source.merged_at, target.merged_at),
+        updated_at = COALESCE(source.updated_at, target.updated_at),
+        db_updated_at = sysdatetime()
+
+    WHEN NOT MATCHED THEN
+    INSERT (
+        jira_ticket_number,
+        repo_slug,
+        pr_id,
+        pr_url,
+        title,
+        branch,
+        base_branch,
+        status,
+        approved_at,
+        merged_at,
+        created_at,
+        updated_at
+    )
+    VALUES (
+        source.jira_ticket_number,
+        source.repo_slug,
+        source.pr_id,
+        source.pr_url,
+        source.title,
+        source.branch,
+        source.base_branch,
+        source.status,
+        source.approved_at,
+        source.merged_at,
+        source.created_at,
+        source.updated_at
+    );
+    """
+
+    params = {
+        "jira_ticket_number": meta["jira_key"],
+        "repo_slug": meta["repo"],
+        "pr_id": meta["pr_number"],
+        "pr_url": meta["pr_url"],
+        "title": meta["title"],
+        "branch": meta["branch"],
+        "base_branch": meta["base_branch"],
+        "status": meta["status"],
+        "approved_at": meta.get("approved_at"),
+        "merged_at": meta.get("merged_at"),
+        "created_at": meta.get("created_at"),
+        "updated_at": meta.get("updated_at"),
+    }
+
+    db_manager.execute(query, params, list(params.keys()))
+    
 if __name__ == "__main__":
         db_manager = DatabaseManager(DATABASE_URL)
         errors = insert_solution_data(error_id=198, solution_data = ['abcjndjnin'],db_manager=db_manager)

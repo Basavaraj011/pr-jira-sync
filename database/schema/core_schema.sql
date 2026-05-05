@@ -117,3 +117,20 @@ CREATE TABLE [AI_PREDICTIVERECOVERYDB].[Project_1].[JOB_STATUS](
     [failure_count] INT NOT NULL,
     [running_count] INT NOT NULL
 );
+
+CREATE TABLE [AI_PREDICTIVERECOVERYDB].[Project_1].[pr_metadata] (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    jira_ticket_number NVARCHAR(50) NOT NULL,
+    repo_slug NVARCHAR(200) NOT NULL,
+    pr_id NVARCHAR(50) NOT NULL,
+    pr_url NVARCHAR(300) NOT NULL,
+    title NVARCHAR(300) NOT NULL,
+    branch NVARCHAR(200) NOT NULL,
+    base_branch NVARCHAR(100) NOT NULL,
+    status NVARCHAR(20) NOT NULL,
+    created_at DATETIME2 NULL,
+    approved_at DATETIME2 NULL,
+    merged_at DATETIME2 NULL,
+    updated_at DATETIME2 NULL,
+	db_updated_at DATETIME2 DEFAULT SYSDATETIME() 
+);
