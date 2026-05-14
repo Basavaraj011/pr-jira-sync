@@ -13,7 +13,7 @@ ticket_key = os.getenv("JIRA_KEY")
 status = os.getenv("TICKET_STATUS")
 
 if not ticket_key or not status:
-    logging.error("Missing JIRA_KEY or TICKET_STATUS environment variables")
+    logging.info("Missing JIRA_KEY or TICKET_STATUS environment variables")
     sys.exit(1)
 
 try:
